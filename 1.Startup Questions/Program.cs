@@ -440,36 +440,35 @@ namespace WordSearch_Assignment
                     string LLetCol = Console.ReadLine();
                     int intLastLetterXcoord = int.Parse(LLetCol);
 
+                    int XcoordDifference = intFirstletterXcoord - intLastLetterXcoord;
+                    int YcoordDifference = intFirstletterYcoord - intLastLetterYcoord;
+
+                    int currentLetterXcoord = intFirstletterXcoord;
+                    int currentLetterYcoord = intFirstletterYcoord;
                     //check words
 
                     for (int checkiteration = 0; checkiteration <= wordSearch.NumWords - 1; checkiteration++) 
                     {
-                        if (intFirstletterYcoord == wordSearch.Fcoord[checkiteration] - 1 && intFirstletterXcoord == wordSearch.Scoord[checkiteration])
+                        if (intFirstletterYcoord == wordSearch.Fcoord[checkiteration] + 1 && intFirstletterXcoord == wordSearch.Scoord[checkiteration])
                         {
-                            int addcoord = 0;
-                            for (int doublecheckiteration = 0; doublecheckiteration < lastcoords.Length - 1; doublecheckiteration++)
+                            if (wordSearch.direction[checkiteration] == "right")
                             {
-
-                                if (intLastLetterYcoord == lastcoords[addcoord + checkiteration] && intLastLetterXcoord == lastcoords[addcoord + 1 + checkiteration])
+                                for (int redletterplaced = 0; redletterplaced < (XcoordDifference * -1) + 1; redletterplaced++, currentLetterXcoord++)
                                 {
-
-                                    for (int greenletters = 0; greenletters < wordSearch.Words[checkiteration].Length; greenletters++)
-                                    {
-                                        if (wordSearch.direction[checkiteration] == "right")
-                                        {
-                                            referenceGrid[wordSearch.Fcoord[checkiteration] + 1, wordSearch.Fcoord[checkiteration] + greenletters] = '*';
-                                        }
-                                        else if (wordSearch.direction[checkiteration] == "left")
-                                        {
-                                            referenceGrid[wordSearch.Fcoord[checkiteration] + 1, wordSearch.Fcoord[checkiteration] + greenletters - 2] = '*';
-                                        }
-                                        //NEED TO DO OTHER DIRECTIONS
-                                    }
-                                    foundwords[checkiteration] = 1;
-                                    correctWords = correctWords + 1;
+                                    referenceGrid[currentLetterYcoord, currentLetterXcoord + 1] = '*';
                                 }
-                                addcoord = addcoord + 1;
+
                             }
+                            else if (wordSearch.direction[checkiteration] == "left")
+                            {
+                                
+                                for (int redletterplaced = 0; redletterplaced < XcoordDifference + 1; redletterplaced++, currentLetterXcoord--) //crash when Redlet = 3
+                                {
+                                    referenceGrid[currentLetterYcoord, currentLetterXcoord + 6] = '*';
+                                }
+                            }
+                            foundwords[checkiteration] = 1;
+                            correctWords++;
                         }
                         else
                         {
@@ -488,23 +487,25 @@ namespace WordSearch_Assignment
 
                             //add new reds
 
-                            int XcoordDifference = intFirstletterXcoord - intLastLetterXcoord;
-                            int YcoordDifference = intFirstletterYcoord - intLastLetterYcoord;
 
-                            int currentLetterXcoord = intFirstletterXcoord;
-                            int currentLetterYcoord = intFirstletterYcoord;
 
 
                             // this loop work for down - you **could** (but don't have to) parameterize the difference in row and column
                             // then add that on each time - for each direction the difference between the row and col of subsequent letter in and
                             // incorrect guess will be -1, 0 or 1
 
+                            currentLetterXcoord = intFirstletterXcoord;
+                            currentLetterYcoord = intFirstletterYcoord;
+
                             //right
                             if (XcoordDifference < 1 && YcoordDifference == 0) //difference is 1 rather than 0 as had to +1 earlier to allign coords because of labels
                             {
                                 for (int redletterplaced = 0; redletterplaced < (XcoordDifference * -1) + 1; redletterplaced++, currentLetterXcoord++)// +1 as one for label and one for when ==
                                 {
-                                    referenceGrid[currentLetterYcoord, currentLetterXcoord + 1] = '!';
+                                    if (referenceGrid[currentLetterYcoord, currentLetterXcoord + 1] != '*')
+                                    {
+                                        referenceGrid[currentLetterYcoord, currentLetterXcoord + 1] = '!';
+                                    }
                                 }
                             }
                             //left
